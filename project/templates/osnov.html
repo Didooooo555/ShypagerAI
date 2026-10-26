@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShypagerAI — Диагноз</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='main-style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <img src="{{ url_for('static', filename='ShypagerAI.png') }}" alt="ShypagerAI Logo" class="logo">
+      </div>
+      <h1>ShypagerAI</h1>
+      <p class="subtitle">ИИ-анализатор симптомов — быстро, просто, надёжно</p>
+    </header>
+
+    <section class="form-section">
+      <h2>Введите симптомы</h2>
+      <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="symptoms">Что вас беспокоит:</label>
+          <textarea name="symptoms" placeholder="Например: кашель, температура, головная боль..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="duration">Длительность симптомов (в днях):</label>
+          <input type="number" name="duration" placeholder="Например: 3" required>
+        </div>
+
+        <div class="form-group">
+          <label for="intensity">Интенсивность (1-10):</label>
+          <input type="range" name="intensity" min="1" max="10" value="5">
+          <div class="range-value">
+            <span>Слабо</span>
+            <span>Сильно</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="image">Фото (необязательно)</label>
+          <input type="file" name="image" accept="image/*">
+        </div>
+
+        <button type="submit">Получить диагноз</button>
+      </form>
+    </section>
+
+    {% if result %}
+    <section class="result-section">
+      <h3>Предварительный диагноз:</h3>
+      <div class="result-box">
+        <p>{{ result }}</p>
+      </div>
+      <a href="{{ url_for('download') }}">
+        <button>Скачать диагноз в Word</button>
+      </a>
+      <p class="warning">Это не медицинский диагноз. Обратитесь к врачу для подтверждения.</p>
+    </section>
+    {% endif %}
+
+    {% if data_points %}
+    <section class="chart-section">
+      <h3>График симптомов</h3>
+      <canvas id="symptomChart" width="600" height="400"></canvas>
+      <script>
+        const dataFromServer = JSON.parse('{{ data_points | tojson | escape | safe }}');
+        const labels = dataFromServer.map(dp => dp.symptoms || 'Без симптома');
+        const durations = dataFromServer.map(dp => dp.duration || 0);
+        const intensities = dataFromServer.map(dp => dp.intensity || 0);
+
+        const ctx = document.getElementById('symptomChart').getContext('2d');
+        const symptomChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Длительность (дни)',
+                data: durations,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+              },
+              {
+                label: 'Интенсивность (1–10)',
+                data: intensities,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'История симптомов'
+              }
+            }
+          }
+        });
+      </script>
+    </section>
+    {% endif %}
+
+    <h3>Карта медицинских учреждений рядом</h3>
+    <div id="map" style="height: 500px; width: 100%; margin-bottom: 40px;"></div>
+  </div>
+
+  <div id="loading-overlay" class="hidden">
+    <div class="spinner"></div>
+    <p>Пожалуйста, подождите...</p>
+  </div>
+
+  <script>
+    const map = L.map('map').setView([44.8488, 65.5000], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const icons = {
+      pharmacy: new L.Icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/833/833472.png',
+        iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30]
+      }),
+      clinic: new L.Icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/2965/2965567.png',
+        iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30]
+      }),
+      hospital: new L.Icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/3771/3771359.png',
+        iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30]
+      })
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        map.setView([lat, lon], 14);
+
+        L.marker([lat, lon]).addTo(map)
+          .bindPopup("Вы здесь")
+          .openPopup();
+
+        const overpassUrl = "https://overpass-api.de/api/interpreter";
+        const query = `
+          [out:json];
+          (
+            node["amenity"="pharmacy"](around:5000,${lat},${lon});
+            node["amenity"="clinic"](around:5000,${lat},${lon});
+            node["amenity"="hospital"](around:5000,${lat},${lon});
+          );
+          out body;
+        `;
+
+        fetch(overpassUrl, {
+          method: "POST",
+          body: query
+        })
+        .then(res => res.json())
+        .then(data => {
+          data.elements.forEach(el => {
+            const name = el.tags.name || "Без названия";
+            const amenity = el.tags.amenity;
+            const popupText = `<b>${amenity}</b><br>${name}`;
+            L.marker([el.lat, el.lon], { icon: icons[amenity] }).addTo(map)
+              .bindPopup(popupText);
+          });
+        })
+        .catch(err => {
+          console.error("Ошибка загрузки объектов:", err);
+        });
+      }, function () {
+        alert("Не удалось получить местоположение.");
+      }, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+    } else {
+      alert("Геолокация не поддерживается браузером.");
+    }
+  </script>
+
+  <script>
+    document.querySelector("form").addEventListener("submit", function () {
+      document.getElementById("loading-overlay").classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>

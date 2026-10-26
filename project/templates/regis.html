@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Анкета — ShypagerAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='form-style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='ShypagerAI.png') }}" alt="ShypagerAI Logo" class="logo">
+        </div>
+        <h1>Анкета для первичного анализа</h1>
+        <p class="subtitle">Заполните форму, чтобы получить персональный анализ от ИИ</p>
+
+        <form action="{{ url_for('submit') }}" method="POST">
+
+            <div class="form-group">
+                <label for="iin">ИИН:</label>
+                <input type="text" id="iin" name="iin"
+                    maxlength="12" minlength="12"
+                    placeholder="Введите ИИН(12цифр)..." 
+                    required
+                    title="ИИН должен состоять ровно из 12 цифр или вы ввели уже сущесвующий ИИН" value="{{ request.form.get('iin', '') }}">    
+            </div>
+
+            <div class="form-group">
+                <label for="username">Имя:</label>
+                <input type="text" id="username" name="username" placeholder="Введите имя..." required value="{{ request.form.get('username', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Фамилия:</label>
+                <input type="text" id="surname" name="surname" placeholder="Введите фамилию..." required value="{{ request.form.get('surname', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Возраст:</label>
+                <input type="number" id="age" name="age" placeholder="Введите возраст..." required value="{{ request.form.get('age', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="rost">Рост (см):</label>
+                <input type="number" id="rost" name="rost" placeholder="Введите ваш рост..." required value="{{ request.form.get('rost', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="ves">Вес (кг):</label>
+                <input type="number" id="ves" name="ves" placeholder="Введите ваш вес..." required value="{{ request.form.get('ves', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="pol">Пол:</label>
+                <select name="pol" id="pol" required>
+                    <option value="">Выберите...</option>
+                    <option value="Мужской" {% if pol == 'Мужской' %}selected{% endif %}>Мужской</option>
+                    <option value="Женский" {% if pol == 'Женский' %}selected{% endif %}>Женский</option>
+                </select>
+            </div>
+
+            <button type="submit">Начать работу</button>
+        </form>
+    </div>
+</body>
+</html>

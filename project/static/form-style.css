@@ -1,0 +1,366 @@
+
+:root {
+  --primary-dark: #0f0c29;
+  --primary-purple: #7b68ee;
+  --primary-blue: #00bfff;
+  --primary-gradient: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+  --text-light: #ffffff;
+  --text_dark: #333333;
+  --background-light: #f5f5f5;
+  --border-radius: 12px;
+  --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --transition-speed: 0.3s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--primary-dark);
+  background-image: url("ShypagerAI.png"),
+    radial-gradient(circle at 10% 20%, rgba(123, 104, 238, 0.2) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 191, 255, 0.2) 0%, transparent 20%),
+    linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  background-repeat: no-repeat;
+  background-position: 95% 95%, center, center, center;
+  background-size: 150px, cover, cover, cover;
+  background-attachment: fixed;
+  color: var(--text-light);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  opacity: 0.05;
+  filter: blur(80px);
+  z-index: -1;
+  animation: float 15s infinite alternate ease-in-out;
+}
+
+body::before {
+  top: -150px;
+  left: -150px;
+  animation-delay: 0s;
+}
+
+body::after {
+  bottom: -150px;
+  right: -150px;
+  animation-delay: -7.5s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, 50px) scale(1.2);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+
+.logo-container {
+  display: none;
+}
+
+
+.logo-container::after {
+  display: none;
+}
+
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  animation: fadeIn 1s ease-out;
+}
+
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("ShypagerAI.png");
+  background-size: 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.02;
+  z-index: -1;
+  filter: blur(3px);
+  animation: rotateBg 120s linear infinite;
+}
+
+@keyframes rotateBg {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 15px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--primary-gradient);
+  border-radius: 3px;
+}
+
+.subtitle {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 35px;
+  font-size: 1.1rem;
+}
+
+form {
+  display: grid;
+  gap: 20px;
+}
+
+
+.form-group {
+  margin-bottom: 25px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.form-group:hover {
+  transform: translateX(5px);
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.3s ease;
+  position: relative;
+  padding-left: 20px;
+}
+
+
+label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--primary-gradient);
+  border-radius: 50%;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-light);
+  font-family: "Inter", sans-serif;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 5px rgba(0, 191, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select option {
+  background-color: var(--primary-dark);
+  color: var(--text-light);
+  padding: 10px;
+}
+
+
+button {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: var(--primary-gradient);
+  color: var(--text-light);
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  margin-top: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.8s;
+  z-index: -1;
+}
+
+button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:active {
+  transform: translateY(-2px);
+}
+
+
+@media (max-width: 600px) {
+  .container {
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+  body {
+    background-position: 95% 95%, center, center, center;
+    background-size: 100px, cover, cover, cover;
+  }
+}
+
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-group:nth-child(1) {
+  animation: fadeInUp 0.5s 0.1s both;
+}
+.form-group:nth-child(2) {
+  animation: fadeInUp 0.5s 0.2s both;
+}
+.form-group:nth-child(3) {
+  animation: fadeInUp 0.5s 0.3s both;
+}
+.form-group:nth-child(4) {
+  animation: fadeInUp 0.5s 0.4s both;
+}
+.form-group:nth-child(5) {
+  animation: fadeInUp 0.5s 0.5s both;
+}
+.form-group:nth-child(6) {
+  animation: fadeInUp 0.5s 0.6s both;
+}
+button {
+  animation: fadeInUp 0.5s 0.7s both;
+}

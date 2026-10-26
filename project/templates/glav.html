@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShypagerAI — ИИ для анализа симптомов</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <img src="{{ url_for('static', filename='ShypagerAI.png') }}" class="logo" alt="ShypagerAI Logo">
+
+      </div>
+      <h1>ShypagerAI</h1>
+      <h2>ИИ-система для умного анализа симптомов</h2>
+      <p class="sub">Быстро. Надёжно. С заботой о вашем здоровье.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" data-aos="fade-up">
+      <p><strong>ShypagerAI</strong> — это интеллектуальный помощник, который поможет вам получить предварительную оценку состояния здоровья на основе введённых симптомов.</p>
+      <p>Заполните анкету и получите персонализированный отчёт всего за пару минут.</p>
+      <a href="{{ url_for('regis') }}" class="btn">Начать диагностику</a>
+    </section>
+
+    <section class="info-block" data-aos="fade-up" data-aos-delay="100">
+      <h3>Как это работает?</h3>
+      <div class="card-container">
+        <div class="info-card" data-aos="zoom-in" data-aos-delay="150">
+          <span class="emoji">✍</span>
+          <h4>Укажите симптомы</h4>
+          <p>Заполните анкету, описав ваше самочувствие.</p>
+        </div>
+        <div class="info-card" data-aos="zoom-in" data-aos-delay="250">
+          <span class="emoji">🧠</span>
+          <h4>ИИ анализирует данные</h4>
+          <p>Алгоритмы обрабатывают информацию и выявляют вероятные проблемы.</p>
+        </div>
+        <div class="info-card" data-aos="zoom-in" data-aos-delay="350">
+          <span class="emoji">📋</span>
+          <h4>Получите результат</h4>
+          <p>Мы покажем предварительный анализ и дадим рекомендации.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="important" data-aos="fade-up">
+      <h3>Важно</h3>
+      <p><strong>ShypagerAI</strong> — это не медицинский диагноз. Обратитесь к врачу для подтверждения результатов.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="ShypagerAI.png" alt="ShypagerAI Logo" width="40">
+    </div>
+    <p>&copy; 2025 ShypagerAI. Все права защищены.</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init({ once: true });</script>
+</body>
+</html>
